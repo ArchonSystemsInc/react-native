@@ -308,15 +308,14 @@ public class ReactModalHostView extends ViewGroup implements LifecycleEventListe
                     "setOnRequestCloseListener must be called by the manager");
                 mOnRequestCloseListener.onRequestClose(dialog);
                 return true;
-              } else {
-                // We redirect the rest of the key events to the current activity, since the
-                // activity expects to receive those events and react to them, ie. in the case of
-                // the dev menu
-                Activity currentActivity = ((ReactContext) getContext()).getCurrentActivity();
-                if (currentActivity != null) {
-                  return currentActivity.onKeyUp(keyCode, event);
-                }
               }
+            }
+            // We redirect the rest of the key events to the current activity, since the
+            // activity expects to receive those events and react to them, ie. in the case of
+            // the dev menu
+            Activity currentActivity = ((ReactContext) getContext()).getCurrentActivity();
+            if (currentActivity != null) {
+              return currentActivity.dispatchKeyEvent(event);
             }
             return false;
           }

@@ -86,6 +86,11 @@ public abstract class ReactActivity extends AppCompatActivity
   }
 
   @Override
+  public boolean dispatchKeyEvent(KeyEvent event) {
+    return mDelegate.dispatchKeyEvent(event) || super.dispatchKeyEvent(event);
+  }
+
+  @Override
   public void onBackPressed() {
     if (!mDelegate.onBackPressed()) {
       super.onBackPressed();
