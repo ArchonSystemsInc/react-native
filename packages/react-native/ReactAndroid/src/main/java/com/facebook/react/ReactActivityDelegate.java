@@ -160,6 +160,33 @@ public class ReactActivityDelegate {
     return false;
   }
 
+  public boolean dispatchKeyEvent(KeyEvent event) {
+    int keyCode = event.getKeyCode();
+    // Handle KEYCODE_MEDIA_FAST_FORWARD events
+    if (event.getAction() == KeyEvent.ACTION_DOWN) {
+      if (getReactNativeHost().hasInstance()
+        && getReactNativeHost().getUseDeveloperSupport()
+        && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD
+        && event.getAction() == KeyEvent.ACTION_DOWN) {
+        event.startTracking();
+        return true;
+      }
+      if (getReactNativeHost().hasInstance()
+        && getReactNativeHost().getUseDeveloperSupport()
+        && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD
+        && event.isLongPress()) {
+        getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
+        return true;
+      }
+    }
+    // Handle onKeyUp
+    if (event.getAction() == KeyEvent.ACTION_UP) {
+      return onKeyUp(keyCode, event);
+    }
+    
+    return false;
+  }
+
   public boolean onBackPressed() {
     return mReactDelegate.onBackPressed();
   }
