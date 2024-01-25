@@ -84,7 +84,15 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
   }
 
   @try { // NSURL has a history of crashing with bad input, so let's be safe
-    NSURL *URL = [NSURL URLWithString:path];
+    NSURL *URL;
+    NSString *versionString = [[UIDevice currentDevice] systemVersion];
+    if ([versionString floatValue] >= 17.0) {
+      URL = [NSURL URLWithString:[path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    } else {
+      URL = [NSURL URLWithString:path];
+    }
+
+    
     if (URL.scheme) { // Was a well-formed absolute URL
       return URL;
     }
@@ -99,7 +107,13 @@ RCT_CUSTOM_CONVERTER(NSData *, NSData, [json dataUsingEncoding:NSUTF8StringEncod
       [urlAllowedCharacterSet formUnionWithCharacterSet:[NSCharacterSet URLQueryAllowedCharacterSet]];
       [urlAllowedCharacterSet formUnionWithCharacterSet:[NSCharacterSet URLFragmentAllowedCharacterSet]];
       path = [path stringByAddingPercentEncodingWithAllowedCharacters:urlAllowedCharacterSet];
-      URL = [NSURL URLWithString:path];
+      
+      if ([versionString floatValue] >= 17.0) {
+        URL = [NSURL URLWithString:[path stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+      } else {
+        URL = [NSURL URLWithString:path];
+      }
+
       if (URL) {
         return URL;
       }
